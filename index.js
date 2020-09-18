@@ -21,11 +21,15 @@ const generateItemElement = function (item) {
       ${itemTitle}
       <div class='shopping-item-controls'>
         <button class='shopping-item-toggle js-item-toggle'>
-          <span class='button-label'>check</span>
+          <span class='button-label'>Check</span>
         </button>
         <button class='shopping-item-delete js-item-delete'>
-          <span class='button-label'>delete</span>
+          <span class='button-label'>Delete</span>
         </button>
+        <form id="js-shopping-list-rename">
+        <input type="text" class="js-item-rename" placeholder=" New Name ">
+        <button type="submit">Rename</button>
+        </form>
       </div>
     </li>`;
 };
@@ -95,6 +99,22 @@ const getItemIdFromElement = function (item) {
     .data('item-id');
 };
 
+const renameListItem = function (id, newName){
+  const index = store.items.findIndex(item => item.id === id);
+  store.items[index].name = newName;
+}
+
+const handleRenameItemClicked = function () {
+  $('#js-shopping-list-rename').submit(function (event) {
+    event.preventDefault();
+    const id = getItemIdFromElement(event.currentTarget);
+    const newName = $('.js-item-rename').val();
+    $('.js-item-rename').val('');
+    renameListItem(id, newName);
+    render();
+  });
+};
+
 /**
  * Responsible for deleting a list item.
  * @param {string} id 
@@ -160,6 +180,7 @@ const handleShoppingList = function () {
   handleItemCheckClicked();
   handleDeleteItemClicked();
   handleToggleFilterClick();
+  handleRenameItemClicked();
 };
 
 // when the page loads, call `handleShoppingList`
